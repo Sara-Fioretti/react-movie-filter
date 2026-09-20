@@ -13,52 +13,74 @@ const film = [
 ];
 
 function App() {
-const [buttonOpened, setButtonOpened] = useState(false)
-const[genereSelezionato, setGenereSelezionato] = useState ('tutti')
-const [filmFiltrati, setFilmFiltrati] = useState(film)
+  const [buttonOpened, setButtonOpened] = useState(false)
+  const [genereSelezionato, setGenereSelezionato] = useState('tutti')
+  const [genereInserito, setGenereInserito] = useState('')
+  const [filmFiltrati, setFilmFiltrati] = useState(film)
 
-const handleClick = ()=>{
-  setButtonOpened (!buttonOpened)
-}
-const handleButtonClick = (genere)=>{
-  setGenereSelezionato (genere)
-  setButtonOpened(!buttonOpened)
-}
+  const handleClick = () => {
+    setButtonOpened(!buttonOpened)
+  }
+  const handleButtonClick = (genere) => {
+    setGenereSelezionato(genere)
+    setButtonOpened(!buttonOpened)
+  }
+  const handleInputChange = (e) => {
+    setGenereInserito(e.target.value)
 
-useEffect(()=>{
-   
-    if(genereSelezionato == 'tutti'){
-      setFilmFiltrati(film)
-    }else{
-      const risultato = film.filter((item) => item.genre === genereSelezionato)
-      setFilmFiltrati(risultato)
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+  }
+
+  useEffect(() => {
+    let risultato = film;
+    if (genereSelezionato !== 'tutti') {
+      risultato = film.filter((item) => item.genre === genereSelezionato)
     }
-}, [genereSelezionato])
+    
+    if (genereInserito !== '') {
+      risultato = film.filter((item) => item.genre === genereInserito)
+      
+    }
+    setFilmFiltrati(risultato)
+  }, [genereSelezionato, genereInserito])
+
+
 
   return (
     <>
-      <div className="dropdown text-start">
-        <button onClick={handleClick} className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          Seleziona genere
-        </button>
-        <ul className={buttonOpened ? "dropdown-menu ": "dropdown-menu show"} >
-          <li><button onClick={()=>handleButtonClick('tutti')} className="dropdown-item" href="#">Mostra tutti i generi</button></li>
-          <li><button onClick={()=>handleButtonClick('Fantascienza')} className="dropdown-item" href="#">Fantascienza</button></li>
-          <li><button onClick={()=>handleButtonClick('Thriller')} className="dropdown-item" href="#">Thriller</button></li>
-          <li><button onClick={()=>handleButtonClick('Romantico')} className="dropdown-item" href="#">Romantico</button></li>
-          <li><button onClick={()=>handleButtonClick('Azione')} className="dropdown-item" href="#">Azione</button></li>
-        </ul>
-      </div>
-<br />
-<br />
-<br />
-      {filmFiltrati.map((item) => (
-        <Card
-          key={item.index}
-          title={item.title}
-          genre={item.genre}>
-        </Card>
-      ))
+      <nav className="navbar navbar-light bg-light">
+        <form onSubmit={handleSubmit} className="form-inline">
+          <input onChange={handleInputChange} className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+          <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+
+        <div className="dropdown text-start">
+          <button onClick={handleClick} className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Seleziona genere
+          </button>
+          <ul className={buttonOpened ? "dropdown-menu " : "dropdown-menu show"} >
+            <li><button onClick={() => handleButtonClick('tutti')} className="dropdown-item" href="#">Mostra tutti i generi</button></li>
+            <li><button onClick={() => handleButtonClick('Fantascienza')} className="dropdown-item" href="#">Fantascienza</button></li>
+            <li><button onClick={() => handleButtonClick('Thriller')} className="dropdown-item" href="#">Thriller</button></li>
+            <li><button onClick={() => handleButtonClick('Romantico')} className="dropdown-item" href="#">Romantico</button></li>
+            <li><button onClick={() => handleButtonClick('Azione')} className="dropdown-item" href="#">Azione</button></li>
+          </ul>
+        </div >
+      </nav>
+      <br />
+      <br />
+      <br />
+      {
+        filmFiltrati.map((item) => (
+          <Card
+            key={item.index}
+            title={item.title}
+            genre={item.genre}>
+          </Card>
+        ))
       }
 
     </>
