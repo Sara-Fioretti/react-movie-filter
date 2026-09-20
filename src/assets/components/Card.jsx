@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 function Card({ title, genre }) {
     return (
         <div className="d-flex justify-content-center gap-5">

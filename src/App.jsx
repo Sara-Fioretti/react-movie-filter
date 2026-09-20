@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useEffect } from 'react';
 import './App.css'
 import Card from './assets/components/Card';
+import Form from './assets/components/Form';
 
 const film = [
   { index: 1, title: 'Inception', genre: 'Fantascienza' },
@@ -17,6 +18,11 @@ function App() {
   const [genereSelezionato, setGenereSelezionato] = useState('tutti')
   const [genereInserito, setGenereInserito] = useState('')
   const [filmFiltrati, setFilmFiltrati] = useState(film)
+  const [listaFilm, setListaFilm] = useState(film)
+ 
+  const addFilm = (nuovoFilm) => {
+    setListaFilm([...listaFilm, nuovoFilm])
+  }
 
   const handleClick = () => {
     setButtonOpened(!buttonOpened)
@@ -35,17 +41,17 @@ function App() {
   }
 
   useEffect(() => {
-    let risultato = film;
+    let risultato = listaFilm;
     if (genereSelezionato !== 'tutti') {
-      risultato = film.filter((item) => item.genre === genereSelezionato)
+      risultato = listaFilm.filter((item) => item.genre === genereSelezionato)
     }
-    
+
     if (genereInserito !== '') {
-      risultato = film.filter((item) => item.genre === genereInserito)
-      
+      risultato = listaFilm.filter((item) => item.genre === genereInserito)
+
     }
     setFilmFiltrati(risultato)
-  }, [genereSelezionato, genereInserito])
+  }, [genereSelezionato, genereInserito, listaFilm])
 
 
 
@@ -61,7 +67,7 @@ function App() {
           <button onClick={handleClick} className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             Seleziona genere
           </button>
-          <ul className={buttonOpened ? "dropdown-menu " : "dropdown-menu show"} >
+          <ul className={buttonOpened ? "dropdown-menu show" : "dropdown-menu "} >
             <li><button onClick={() => handleButtonClick('tutti')} className="dropdown-item" href="#">Mostra tutti i generi</button></li>
             <li><button onClick={() => handleButtonClick('Fantascienza')} className="dropdown-item" href="#">Fantascienza</button></li>
             <li><button onClick={() => handleButtonClick('Thriller')} className="dropdown-item" href="#">Thriller</button></li>
@@ -80,9 +86,11 @@ function App() {
             title={item.title}
             genre={item.genre}>
           </Card>
+
         ))
       }
 
+      <Form addFilm={addFilm} />
     </>
   )
 }
